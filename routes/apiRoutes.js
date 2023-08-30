@@ -15,6 +15,9 @@ router.get('/api/notes', (req, res) => {
 });
 
 router.post('/api/notes', (req, res) => {
+    try {
+        console.log('Received POST request with body:', req.body);
+
     const dbPath = './db/db.json';
     let db = JSON.parse(fs.readFileSync(dbPath, 'utf-8'));
 
@@ -28,6 +31,10 @@ router.post('/api/notes', (req, res) => {
     fs.writeFileSync(dbPath, JSON.stringify(db));
 
     res.json(db); // Send the updated db object as a JSON response
+    } catch (error) {
+        console.error(error); // Log the error for debugging
+        res.status(500).json({ error: 'An error occurred while fetching notes.' });
+    } 
 });;
 
 module.exports = router;

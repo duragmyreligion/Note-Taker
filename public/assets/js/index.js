@@ -50,6 +50,22 @@ const deleteNote = (id) =>
     },
   });
 
+  const apiUrl = '/api/notes'; // Make sure this URL is correct
+console.log('Fetching from:', apiUrl);
+
+fetch(apiUrl)
+    .then(response => {
+        console.log('Response:', response);
+        return response.json();
+    })
+    .then(data => {
+        console.log('Data:', data);
+        // Handle the data here
+    })
+    .catch(error => {
+        console.error('Fetch error:', error);
+    });
+
 const renderActiveNote = () => {
   hide(saveNoteBtn);
 
