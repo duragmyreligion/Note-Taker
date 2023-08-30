@@ -1,29 +1,33 @@
 const express = require("express");
-const router = express();
+const router = express.Router();
 const uuid = require("uuid");
 const fs = require("fs");
 
 router.use(express.json());
 
 router.get('/api/notes', (req, res) => {
-    const db = fs.readFileSync('./db/db.json', 'utf-8');
-    res.json(JSON.parse(db));
+    try {
+        const db = fs.readFileSync('./db/db.json');
+        res.json(JSON.parse(db));
+    } catch (error) {
+        res.status(500).json({ error: 'An error occurred while fetching notes.' });
+    }
 });
 
 router.post('/api/notes', (req, res) => {
     const dbPath = './db/db.json';
-    const db = JSON.parse(fs.readFileSync(dbPath, 'utf-8'));
-
-    db = JSON.parse(db);
-    res.json(db);
+    let db = JSON.parse(fs.readFileSync(dbPath, 'utf-8'));
 
     const userNote = {
-        id: uuid(),
+        id: uuid.v4(),
         title: req.body.title,
         text: req.body.text,
     };
 
     db.push(userNote);
-    fs.writeFileSync('/db/db.json', JSON.stringify(db));
-    res.json(db);
-});
+    fs.writeFileSync(dbPath, JSON.stringify(db));
+
+    res.json(db); // Send the updated db object as a JSON response
+});;
+
+module.exports = router;
